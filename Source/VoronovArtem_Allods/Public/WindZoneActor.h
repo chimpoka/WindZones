@@ -8,7 +8,7 @@
 
 class UArrowComponent;
 class UStaticMeshComponent;
-class AVoronovArtem_AllodsCharacter;
+class AAllodsCharacter;
 
 UCLASS()
 class VORONOVARTEM_ALLODS_API AWindZoneActor : public AActor
@@ -32,8 +32,8 @@ private:
 	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
-	UPROPERTY()
-		float WindSpeed = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Allods)
+	float WindSpeed = 2.0f;
 
 	UPROPERTY()
 	FVector WindDirection;
@@ -48,9 +48,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Allods)
 	bool bForwardDirection;
 
 	UPROPERTY()
-	AVoronovArtem_AllodsCharacter* AffectedCharacter;
+	AAllodsCharacter* AffectedCharacter;
 };

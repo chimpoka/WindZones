@@ -5,7 +5,7 @@
 #include <Components/ArrowComponent.h>
 #include <Components/StaticMeshComponent.h>
 
-#include "VoronovArtem_AllodsCharacter.h"
+#include "AllodsCharacter.h"
 
 AWindZoneActor::AWindZoneActor()
 {
@@ -20,6 +20,8 @@ AWindZoneActor::AWindZoneActor()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	StaticMeshComponent->SetupAttachment(GetRootComponent());
+
+	bReplicates = true;
 }
 
 void AWindZoneActor::BeginPlay()
@@ -28,6 +30,10 @@ void AWindZoneActor::BeginPlay()
 
 	SetActorTickEnabled(false);
 
+	// I think it's a good idea to check overlaps only on server side
+	if (!HasAuthority())
+		return;
+
 	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AWindZoneActor::OnComponentBeginOverlap);
 	StaticMeshComponent->OnComponentEndOverlap.AddDynamic(this, &AWindZoneActor::OnComponentEndOverlap);
 }
@@ -35,6 +41,9 @@ void AWindZoneActor::BeginPlay()
 void AWindZoneActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!IsValid(AffectedCharacter))
+		return;
 
 	AffectedCharacter->AddActorWorldOffset(WindDirection * WindSpeed);
 }
@@ -54,19 +63,22 @@ void AWindZoneActor::SetForwardDirection(bool ForwardDirection)
 
 void AWindZoneActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	SetActorTickEnabled(true);
+	auto tempCharacter = Cast<AAllodsCharacter>(OtherActor);
 
-	AffectedCharacter = Cast<AVoronovArtem_AllodsCharacter>(OtherActor);
+	if (!IsValid(tempCharacter))
+		return;
+
+	SetActorTickEnabled(true);
+	AffectedCharacter = tempCharacter;
 	AffectedCharacter->EnterWindZone(this);
 }
 
 void AWindZoneActor::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	SetActorTickEnabled(false);
-
 	if (!IsValid(AffectedCharacter))
 		return;
 
+	SetActorTickEnabled(false);
 	AffectedCharacter->ExitWindZone(this);
 	AffectedCharacter = nullptr;
 }
