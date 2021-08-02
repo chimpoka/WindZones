@@ -70,17 +70,18 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsWindMovementEnabled() const { return bWindMovementEnabled; }
 
+	void EnterWindZone(AWindZoneActor* WindZoneActor);
+	void ExitWindZone(AWindZoneActor* WindZoneActor);
+
+protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnRep_bWindMovementEnabled();
 
+private:
 	UFUNCTION(Server, unreliable, WithValidation)
 	void Server_AddCharacterInputInWindZone(float AxisValue, EAxis::Type AxisDirection);
 	bool IsValidForServer_AddCharacterInputInWindZone(float AxisValue);
 
-	void EnterWindZone(AWindZoneActor* WindZoneActor);
-	void ExitWindZone(AWindZoneActor* WindZoneActor);
-
-private:
 	void EnableWindMovement();
 	void DisableWindMovement();
 
