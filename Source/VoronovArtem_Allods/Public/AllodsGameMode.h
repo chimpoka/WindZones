@@ -15,7 +15,7 @@ class AAllodsGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	AAllodsGameMode();
+	AAllodsGameMode() = default;
 
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;

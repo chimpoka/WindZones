@@ -241,7 +241,7 @@ void AAllodsCharacter::WindModeMove(float AxisValue, EAxis::Type AxisDirection)
 
 	FVector movementForwardVector = inputDirection * AxisValue * WindModeMoveSpeed;
 	// Move only in XY plane
-	movementForwardVector.Z = 0.0f;
+	//movementForwardVector.Z = 0.0f;
 	FVector projectionOnWindDirection = movementForwardVector.ProjectOnTo(WindWorldDirection);
 	// Exclude WindWorldDirection projection from inputDirection. Don't want to speed up/slow down character inside wind zone,
 	// want to keep constant speed towards WindWorldDirection

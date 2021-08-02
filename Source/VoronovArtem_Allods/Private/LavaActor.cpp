@@ -22,14 +22,14 @@ void ALavaActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!HasAuthority())
+		return;
+
 	StaticMeshComponent->OnComponentHit.AddDynamic(this, &ALavaActor::OnComponentHit);
 }
 
 void ALavaActor::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (!HasAuthority())
-		return;
-
 	auto gameMode = Cast<AAllodsGameMode>(UGameplayStatics::GetGameMode(this));
 	auto character = Cast<AAllodsCharacter>(OtherActor);
 
